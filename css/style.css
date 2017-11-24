@@ -1,43 +1,19 @@
-/*
- * css styles go here
- */
-
-
-body {
-  font-family: Helvetica,Arial,sans-serif;
+h1, h2, h3 {
+  color: slategray;
 }
 
 a, a:visited {
-  color: navy;
+  color: slategray;
   text-decoration: none;
+  opacity: .9;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  opacity: 1;
 }
 
-
-
-
-#header {
-  padding: 4px;
+body {
+  color: #596673;
+  line-height: 1.35rem;
 }
-
-#header .big {
-  font-size:   140%;
-  font-weight: bold;
-}
-
-#header .small {
-  font-size:    90%;
-  color:        grey;
-  padding-left: 15px;
-}
-
-#nav {
-  padding: 6px;
-}
-
-
-
-

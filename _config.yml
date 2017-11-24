@@ -1,14 +1,13 @@
-###########
-# site.title
-
-title:    'Jekyll Starter Theme'
-subtitle: 'Another Minimalistic Static Site Quick Starter Theme'
-
-
-#########################
-# more settings
+title: 'Udemy Ramda Course Notes'
+subtitle: 'notes for the online course avaliable on Udemy.com'
 
 markdown: kramdown
+
+kramdown:
+  hard_wrap: true
+  input: GFM
+
+highlighter: rouge
 
 exclude:
 - README.md

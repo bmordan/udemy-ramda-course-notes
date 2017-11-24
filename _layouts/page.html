@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ site.title }}</title>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.9.0/css/tachyons.min.css"/>
+    <link rel="stylesheet" href="{{ "/css/style.css" | relative_url }}"/>
+  </head>
+  <body class="sans-serif pa4">
+    <nav style="position:fixed;top:1rem;left:0;">
+      <a href="/">
+        <img src="https://images.g2crowd.com/uploads/product/image/social_landscape/social_landscape_1489700996/udemy.png" height="40px" />
+      </a>
+    </nav>
+    <main class="measure-wide center">
+      {{ content }}
+    </main>
+    <nav class="post-nav flex items-center justify-between pv0" style="margin-top: 12rem;">
+      {% if page.previous.url %}
+        <a class="flex-auto pa2 pl4 tl" href="{{page.previous.url | relative_url}}" style="line-height:3rem;">&#8592;<span class="dn di-ns ml1">{{page.previous.title}}</span></a>
+      {% endif %}
+      {% if page.next.url %}
+        <a class="flex-auto pa2 pr4 tr" href="{{page.next.url | relative_url}}" style="line-height:3rem;"><span class="dn di-ns mr1">{{page.next.title}}</span>&#8594;</a>
+      {% endif %}
+    </nav>
+  </body>
+</html>
