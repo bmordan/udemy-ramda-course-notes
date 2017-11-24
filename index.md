@@ -5,10 +5,10 @@ title:  Udemy Ramda Course
 
 # {{ page.title }}
 
-<ul>
-  {% for post in site.posts %}
-    <li>
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    </li>
-  {% endfor %}
-</ul>
+{% for post in site.posts %}
+  [{{ post.title }}]({{ post.url | relative_url }})
+{% endfor %}
+
+<small style="position:fixed;bottom:0;left:.25rem;">
+  [&copy; bmordan](https://github.com/bmordan)
+</small>
