@@ -1,6 +1,7 @@
 ---
 layout: page
 title:  Introducing Functional Programming
+permalink: introducing-functional-programming/
 ---
 
 # {{page.title}}

@@ -1,6 +1,7 @@
 ---
 layout: page
 title:  Simple Operators
+permalink: simple-operators/ 
 ---
 
 # Simple Operators
