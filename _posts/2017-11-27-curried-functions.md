@@ -36,6 +36,8 @@ The number of iterations is the number of iterations the hashing algorithm will 
 
 Example's of digests you can use are: ```['md4', 'md5', 'sha1', 'sha256', 'sha512', 'whirlpool']```
 
+Our hashing function will always produce the same key from the same inputs. We can't decrypt the hash, but by running the function with the same inputs and getting the same results, we can conclude that the supplied password string must have been used to create the original hash and thus we have a match.
+
 Lets curry this function with Ramda
 
 ```js
@@ -67,26 +69,28 @@ genKeyWithPassword((err, hash) => {
 })
 ```
 
-What does currying really do for us here? Well it gives us some flexibility. We don't need all the arguments at the same time and in the same place to create our key. This becomes really powerful when we start using placeholders for one, or more, of the arguments. Ramda has a placeholder function called `underscore underscore` lets use it.
+## So what
+
+What does currying really do for us here? Well it gives us some flexibility. We don't need all the arguments at the same time and in the same place to create our key. For example the digest, key length and iterations values might come from config, and the salt from some where else.
+
+Currying becomes really powerful when we start using placeholders for one, or more, of the arguments. Ramda has a placeholder function called `underscore underscore` any of the curried function's arguments can be replaced with a placeholder.
 
 Having created and stored our user's password string in the form of a hash, later we'll want to verify that the user's supplied password string matches the one we have stored.
 
-Here we can use Ramda's placeholder `__` function in lieu of the password string. This means we can create a 'verify' function which we can call later with a password string.
+Here we can use Ramda's placeholder `__` function in lieu of the password string. This means we can create a 'verify' function which we can call with just a password string.
 
 ```js
 const verify = keyGen(__, salt, iterations, len, digest)
-const create = verify(password)
 const stored = '0409757bb520dfc434eb9252b1176082324af3134f71e247'
 const cb = bind(done, (err, hash) => {
   expect(hash.toString('hex')).toEqual(stored)
   done()
 })
 //usage
-create(cb)
 verify('cats12')(cb)
 ```
 
-Having curried our hashing function we can easily make a `create` function to make and store our key, and a `verify` function to check that passwords match. This is simplified example, my aim here to show how programming in a functional style leads you to create more reusable functions. Next we need to look at composing functions.
+Having curried our hashing function we can easily make a `create` function to make and store our key, and a `verify` function to check that passwords match. This is simplified example, but my aim here to show how programming in a functional style leads you to create more reusable functions. Next we need to look at composing functions.
 
 ## digests for pbkdf2
 
