@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>{{ site.title }}</title>
-    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.9.0/css/tachyons.min.css"/>
-    <link rel="stylesheet" href="{{ "/css/style.css" | relative_url }}"/>
-  </head>
+  {% include head.html %}
   <body class="sans-serif pa4">
-    <nav style="position:fixed;top:1rem;left:0;">
+    <nav style="position:fixed;top:0rem;left:0;" class="w-100 bg-white pt2">
       <a href="{{ '/' | relative_url }}">
         <img src="https://images.g2crowd.com/uploads/product/image/social_landscape/social_landscape_1489700996/udemy.png" height="40px" />
       </a>
     </nav>
-    <main class="measure-wide center">
+    <main class="w-100 mw6 center mt4">
       {{ content }}
     </main>
     <nav class="post-nav flex items-center justify-between pv0" style="margin-top: 12rem;">
