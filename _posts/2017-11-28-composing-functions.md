@@ -8,27 +8,7 @@ permalink: composing-functions/
 
 In this session we are going to start composing functions. This is were functional programming really began to make sense to me.
 
-In our previous example where we were looking at curried functions, we hashed password strings using a curried function.
-
-Seeing as our heads are into that lets carry on and make things a little more interesting. Hashing every user's password with the same salt is not so great. Each new hashed password we should create with a new salt. Then we should store the hashed password string and the salt together.
-
-When the time comes to check that a password string matches the password we have stored for that user, we will:
-
-* recover the hashed password and salt combination
-* split the salt away from the stored hash
-* bind the stored salt to our hashing function
-* create a callback that checks the stored key matches the hashed key
-
-This is a procedure that we can create with a series of small functions composed together. Ramda has a suite of compose functions:
-
-* compose
-* composeK
-* composeP
-* pipe
-* pipeK
-* pipeP
-
-Lets create a simple composed function with a function that adds 5 to a number and a function that squares it's input. You pass a value into the pipe, then the output of the first function is the input of the next until you return a function or final value.
+Lets create a simple composed function with a function that adds 5 to a number and a function that squares it's input. In both compose and pipe you call the composed function with the first argument , then the output of the first function is the input of the next function until you return a final value.
 
 ```js
 const addFive = add(__, 5)
@@ -41,14 +21,22 @@ expect(pipe(sqr, addFive)(0)).toBe(5)
 expect(pipe(addFive, sqr)(0)).toBe(25)
 ```
 
-Compose works right to left, pipe works left to right.
+Lets call our compose function with zero. Zero squared is zero, add 5 to zero and our final value is 5. If we flip the function arguments, zero plue 5 is 5, 5 squared is 25. Compose works right to left.
 
-In our pipe we need to:
+Pipe works the same way but left to right. Zero squared is 0, plus 5 is 5 and we get 25 if we switch the functions in the pipe.
+
+In our previous session we were looking at curried functions, we hashed password strings using a curried function.
+
+Lets carry on with that example, and make things a little more interesting. Hashing every user's password with the same salt is not so great. Each new hashed password we should create with a newly generated salt. Then we can store the hashed password string and the salt together in the datastore.
+
+When the time comes to check that a password string matches the password we have stored for that user, we will:
 
 * recover the hashed password and salt combination
 * split the salt away from the stored hash
 * bind the stored salt to our hashing function
 * create a callback that checks the stored key matches the hashed key
+
+This is a procedure that we can create with a series of small functions composed together. I'm going to use pipe and create a series of functions to do this. Lets start with some variables that you'll remember from the previous session.
 
 ```js
 const username = 'cat_lover'
@@ -77,7 +65,9 @@ const verify = pipe(
 verify('cat_lover')
 ```
 
-I'm imagining an endpoint that has been hit with a username and password. We can curry our hashing function with password and our default config. Then we would lookup the stored hashedPassword/salt with the username in a datastore, but here we are just going to make a function that always returns our string.
+I have included 'username' and 'password' as variables as I'm imagining an endpoint that has been hit with a username and password and we have pull those values from the request object.
+
+We can curry our hashing function with the password and our default config. Then we would lookup the stored hashedPassword/salt with the username in a datastore, but here we are just going to make a function that always returns our string.
 
 **always** will always return the value you supply it with.
 
