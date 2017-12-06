@@ -6,6 +6,8 @@
     color: #FFFFFF;
     font-size: 1rem;
     line-height: 2rem;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 /* Highlights taken from https://gist.github.com/asaaki/1007420  for Monokai theme */
 .c                 { color: #75715e }                            /* Comment                     */
