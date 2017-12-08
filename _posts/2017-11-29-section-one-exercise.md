@@ -18,6 +18,6 @@ Get this test to pass.
 
 ```js
 test('Should be able to derive the hours of daylight', () => {
-  expect(getDailyLightHours(data)).toBe(8)
+  expect(getDayLightHours(data)).toBe(8)
 })
 ```
