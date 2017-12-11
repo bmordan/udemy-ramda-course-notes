@@ -72,8 +72,10 @@ I never reference the data in this collection of functions. Sometimes 'point-fre
 
 > tacit - understood without being openly expressed
 
-The data is operated on by our pipe of functions, but not explicitly referenced by it. So our atomic functions remain generic, wonderfully stupid and simple. You can say to yourself
+The data is operated on by our pipe of functions, but not explicitly referenced by it. So our atomic functions remain generic, wonderfully stupid and simple. As you compose functions together, think about:
 
-> Data last
+* passing the data as the final argument
+* creating small functions that are generic
+* avoid referencing your data explicitly
 
-As you compose functions together, thing about passing the data as the final argument, where you can create small functions that are generic and free of complexity and you'll find you naturally start writing code in a 'point-free' style.
+Follow these ideas and you'll find yourself naturally writing code in a 'point-free' style.
