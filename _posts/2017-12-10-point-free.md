@@ -35,7 +35,7 @@ From our data we want to pick off the two properties that we need to create our 
 Now let's have a look at an awesome utility called __evolve__, this takes an object and allows you to evolve all or some of the properties of that object by applying a transformation function. I'll show you want I mean.
 
 ```js
-const transforms = {
+const transformsWeather = {
   weather: pipe(
     map(prop('description')),
     join(' ')
@@ -52,7 +52,7 @@ I am just having so much fun using Ramda that the next steps are maybe a bit ove
 Nearly there. Now it's just a map and __join__ party to get strings out of the array structures.
 
 ```js
-const transforms = {
+const transformsWeather = {
   weather: pipe(
     map(prop('description')),
     join(' ')
@@ -60,7 +60,7 @@ const transforms = {
 }
 const summary = pipe(
   pick(['name', 'weather']),
-  evolve(transforms),
+  evolve(transformsWeather),
   props(['name', 'weather']),
   zip(['Today in', 'you can expect']),
   map(join(' ')),
