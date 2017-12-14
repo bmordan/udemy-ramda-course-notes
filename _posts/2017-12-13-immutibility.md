@@ -4,7 +4,7 @@ title:  Immutability
 permalink: immutability/
 ---
 
-# {page.title}
+# {{page.title}}
 
 To embrace a functional style of programming you'll need to embrace the concept of immutability. Many of Javascript's primitives are not immutability by default.
 
@@ -51,7 +51,7 @@ a.sort()
 expect(b[0]).toBe(4) // fails b[0] === 1
 ```
 
-It's a reference.
+It's a reference. This behaviour has lead to bugs on projects I have worked on. Immutability aims to remove the possibility of these kind of problems developing in your code.
 
 ## Diff algorithms
 
@@ -61,7 +61,7 @@ For anyone who has used React this pattern of immutability will be familiar to y
 
 <sub>from the React docs<sub>
 
-Under the hood react needs the old and new states to performing its diff algorithm that makes up part of the render function.
+If you modify state directly, your component will not re-render. You can't set state in the render function. Under the hood react needs the old and new states to performing it's diff algorithm that makes up part of the render function.
 
 ## Functional Reasons
 
@@ -72,3 +72,22 @@ Being a functional programmer means favouring Immutability for the following rea
 * Purity
 
 Purity here refers to pure functions that do not rely on external state. Pure functions only operate on the arguments they are passed, and have no side effects. As your codebase increases in size and complexity knowing that your values are stable through your implementation of immutability will lead to less bugs and help teams work more effectively together.
+
+You can relax about implementing immutability when you are using Ramda as it comes with immutability baked in. For example.
+
+## Updating arrays and objects
+
+```js
+const a = [1,2,3,4]
+const b = a
+
+// b[3] = 2 mutable
+const update = pipe(
+  adjust(always(2), 3), last
+)
+
+expect(a[3]).toBe(4)
+expect(update(b)).toBe(2)
+```
+
+For objects you can do the same operation using `assoc` or `assocPath` the methods for manipulating data in arrays and objects are all in the documentation and now you understand more about their immutable behaviour.
