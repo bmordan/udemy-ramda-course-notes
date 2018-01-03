@@ -13,6 +13,27 @@ For inputs I am being passed the grid (an array of arrays), and the reference of
 
 I am going to need to lookup references around the lastPlayed reference. I will have to deal with null and undefined references. I also will have to lookup in two related directions.
 
+Here are the Ramda functions I have used:
+
+```js
+const {
+  gt,
+  reduceWhile,
+  partial,
+  adjust,
+  inc,
+  dec,
+  pipe,
+  map,
+  curry,
+  append,
+  flatten,
+  splitEvery,
+  head,
+  last
+} = require('ramda')
+```
+
 I made a list of simple transform functions that will transform a reference. So you can pass a reference to `up` and it will return you a transformed reference to the cell above the original reference in the grid.
 
 ```js
