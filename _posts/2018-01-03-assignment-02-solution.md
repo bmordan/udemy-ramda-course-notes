@@ -110,6 +110,20 @@ const iterator = (grid, counter, lastPlay, transFns) => {
 
 The last line is a bit clumsy `reduceWhile` is going to do this same logic too. If we have not found a winning connection of 4 counters in a particular direction, I want to start the next round of lookups with a clean slate if you like. So I test for connect 4 and if I don't have it, we just result the accumulator to be the origin reference, or the last played reference.
 
+```js
+const yourFn = (grid, lastPlay) => {
+  const counter = maybeCounter(grid, lastPlay).just()
+  return reduceWhile(
+    connect4,
+    partial(iterator, [grid, counter]),
+    lastPlay,
+    transFns
+  )
+}
+```
+
+The entry function is the `reduceWhile` function I have mentioned. I'm partially applying the grid and the lastPlayed counter so these values are available in the iterator.
+
 This is enough to make the test pass, the algorithm has found the references for the connected counters. The main goal of the final assignment has been to have you use some of the functions provided by Ramda, combine it with the pieces of functional programming theory we have looked at, and to write some code to solve a problem.
 
 I hope you have enjoyed the course. Please rate it, leave your comments and tell your friends and colleagues about it.
