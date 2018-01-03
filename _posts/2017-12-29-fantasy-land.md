@@ -126,4 +126,4 @@ Array.prototype.nothing = function () {
 }
 ```
 
-The 'Monad' is a algebraic structure you will come across in different functional programming languages. It gives us a robust way to deal with `undefined` and `null` values in our programs when the output of functions maybe one thing, or maybe nothing. The 'Fantasy Land' specification gives us blue prints for creating structures that follow recognisable patterns and rules. The best way to learn about the different types is to create them yourself like we have done here with our array 'Monad'.
+The 'Monad' is a algebraic structure you will come across in different functional programming languages. It gives us a robust way to deal with `undefined` and `null` values in our programs when the output of functions maybe one thing, or maybe nothing. The 'Fantasy Land' specification gives us blue prints for creating structures that follow recognisable patterns and rules. The best way to learn about the different types is to create them yourself like we have done here with our array a'Monad'.
