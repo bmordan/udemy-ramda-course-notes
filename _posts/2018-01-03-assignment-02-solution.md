@@ -7,13 +7,7 @@ published: true
 
 # {{page.title}}
 
-There are is no one correct way to solve this problem. Here is my walk through for the final assignment.
-
-For inputs I am being passed the grid (an array of arrays), and the reference of the last played counter. The output is an array of arrays, the references of 4 connected counters.
-
-I am going to need to lookup references around the lastPlayed reference. I will have to deal with null and undefined references. I also will have to lookup in two related directions.
-
-Here are the Ramda functions I have used:
+There is no one correct way to solve this problem. Here is my walk through for the final assignment solution. I used these Ramda functions;
 
 ```js
 const {
@@ -30,11 +24,22 @@ const {
   flatten,
   splitEvery,
   head,
-  last
+  last,
+  tap
 } = require('ramda')
 ```
 
-I made a list of simple transform functions that will transform a reference. So you can pass a reference to `up` and it will return you a transformed reference to the cell above the original reference in the grid.
+## My Approach
+
+As I thought about solving the problem there were a couple of programming patterns I felt would be a good fit. The first was recursion, a function that would keep calling itself until it didn't. I imagined such a function looking up adjacent references, accumulating those references and then calling itself again if it found a matching counter. That pattern of accumulating references made me also think of a reduce function. So I was expecting to use some recursion and a reduce.
+
+I visualised my algorithm working something like this. I start at one reference in the grid. Then I look in each direction one cell at a time. If the next cell is null or undefined, I can stop and then change direction.
+
+If I find a match, then I'll add it to my results, and call the same function again and again until I have exhausted that direction. I liked the idea of looking in related directions, for example left and right, then concatenating the matching results. The moment that concatenated result's array has a length of 4, the game has been won, and I'm left with the winning references all lined up in the right order.
+
+## Transform Functions
+
+I started simple. To look up adjacent cells I needed to derived the references for those cells from a given grid reference. I made a list of pure functions that will transform a reference. So you can pass a reference to `up` and it will return you a transformed reference to the cell above.
 
 ```js
 const up = adjust(dec, 0)
@@ -50,7 +55,7 @@ up([2, 3])
 // [1, 3]
 ```
 
-This will not always work when you look these references up on the grid. For example if you are on the right edge of the grid and you call `right` the new reference will be to a cell which does not exist and will be undefined. So I wanted a way to deal with null and undefined values. Here is my `Maybe` monad, and a function that uses it.
+The transformed reference will not always work when you use it to lookup a counter on the grid. For example if you are on the right edge of the grid and you call `right` the new reference will be to a cell which does not exist, and will be undefined. So I wanted a way to deal with null and undefined values. I created a `Maybe` monad, and a function that uses it.
 
 ```js
 const Maybe = function (val) { this.val = val }
@@ -65,7 +70,9 @@ const maybeCounter = (grid, ref) => {
 }
 ```
 
-I need to be looking for cells in two related directions. For example `upRight` and `downLeft` makes a diagonal line in which we need to find 4 connected counters. So I just structure them in an array that I can reduce over.
+With `maybeCounter` I can supply it with the grid and a reference and receive a `Maybe` in return. The condition of the `Maybe` would decide if I keep looking in that direction or give up.
+
+I need to be looking for matching cells in two related directions. For example `upRight` and `downLeft` makes a diagonal line in which we need to find 4 connected counters. So I just structure my transform functions in related pairs.
 
 ```js
 const transFns = [
@@ -76,21 +83,55 @@ const transFns = [
 ]
 ```
 
-I can feel the solution might involve some recursive functions, and some reducing. It will not be a direct mapping. When I have found 4 connected counters, I want to stop, the game is won. `reduceWhile` seemed a great fit for that.
+## Reducing
 
-`reduceWhile` takes a predicate function that it called before each iteration, if it returns false it will quit and return the current value of the accumulator.
+Now to start building the execution flow. My entry function is going to use a `reduceWhile`. `reduceWhile` takes a predicate function that it calls before each iteration. If the predicate function returns false it will quit and return the current value of the accumulator. The accumulator here will be the array of connected counters. My predicate function looks like this. If 4 is greater than the length of the accumulator keep looking.
 
 ```js
-const connect4 = (arr) => gt(4, arr.length)
+const keepLookingConnect4 = (arr) => gt(4, arr.length)
 ```
 
-The `connect4` function tests that 4 is greater than the accumulator array's length. When connect4 is false it breaks the reduce.
+My `reduceWhile` also needs an iterating function, as well as the seed value (which will be the lastPlayed reference) and a list. The list I'm reducing over is the list of transform functions, arranged in related directional pairs. My entry function now looks like this;
 
-Lots of small bits now to start putting them together. The main `reduceWhile` is going to reduce over the transform functions performing lookups. The idea is we'll start with the lastPlay reference. Any winning array of references will have this reference as one of its values, so its our seed value.
+```js
+const yourFn = (grid, lastPlay) => {
+  const counter = maybeCounter(grid, lastPlay).just()
+  return reduceWhile(
+    keepLookingConnect4,
+    partial(iterator, [grid, counter]),
+    lastPlay,
+    transFns
+  )
+}
+```
 
-The programme can't see the whole grid like we can. It's harder to find patterns. I am going to look in each direction one cell at a time. If the next cell is null or undefined, we can stop and then change direction.
+In a normal reduce, the iterating function receives two arguments (acc, value) I want to add the grid and the counter as arguments too, so I use a partial. Now my iterating function will get passed;
 
-If we find a match, then we'll add it to our result and go again. I needed a recursive function that I could call again and again until I have exhausted that direction. Here is my lookup function.
+* the grid
+* the counter
+* the lastPlayed reference
+* a pair of directional transform functions
+
+Here is my iterating function.
+
+```js
+const iterator = (grid, counter, lastPlay, transFns) => {
+  const found = map(lookup(grid, counter, lastPlay, []), transFns)
+  const connections = pipe(
+    flatten,
+    splitEvery(2)
+  )([last(found), lastPlay, head(found)])
+  return keepLookingConnect4(connections) ? lastPlay : connections
+}
+```
+
+In the iterator `found` is an array of two values that result from mapping over the pair of directional transform functions. Those values in `found` are arrays of references found in the two directions. `connections` is a concatenation of the original reference with references we found in the two directions.
+
+If we have a winning array of 4 references then I return that array - reduceWhile will terminate and we'll have a result. If it is less that 4 then I return the original reference, so we can start a fresh round of lookups in the next direction.
+
+## The lookup function
+
+Here is my lookup function.
 
 ```js
 const lookup = curry((grid, counter, prevRef, acc, transFn) => {
@@ -102,49 +143,18 @@ const lookup = curry((grid, counter, prevRef, acc, transFn) => {
 })
 ```
 
-It's curried so I can call it with different transform functions. My iterator function is called with a pair of related transform functions like `up` and `down`. It tries to find a match only returning when it does not.
+It's curried so I can call it with different transform functions in a map. It does the following work;
 
-After a lookup I'm left with an array that has the references of matches to the left and matches to the right.
+* creates a new reference by applying a transform function
+* tries to look that cell up on the grid
+* if there is nothing it returns
+* if there is a counter that does not match it returns
+* if there is a match it calls the lookup again with new arguments
 
-```js
-[ [ [ 4, 4 ], [ 5, 3 ] ], [ [ 2, 6 ] ] ]
-```
+The recursive call to lookup has two altered arguments the value of 'prevRef', and the 'acc' or accumulator now has any found references added to it.
 
-I finally combine these two arrays, with the original reference to end up with a possible winning combination.
+When this is all put together it is enough to make the test pass, the algorithm has a way to find 4 connected counters in any direction.
 
-```js
-[ [ 2, 6 ], [ 3, 5 ], [ 4, 4 ], [ 5, 3 ] ]
-```
-
-Here is the iterating function.
-
-```js
-const iterator = (grid, counter, lastPlay, transFns) => {
-  const found = map(lookup(grid, counter, lastPlay, []), transFns)
-  const connections = pipe(
-    flatten,
-    splitEvery(2)
-  )([last(found), lastPlay, head(found)])
-  return connect4(connections) ? lastPlay : connections
-}
-```
-
-The last line is a bit clumsy `reduceWhile` is going to do this same logic too. If we have not found a winning connection of 4 counters in a particular direction, I want to start the next round of lookups with a clean slate if you like. So I test for connect 4 and if I don't have it, we just result the accumulator to be the origin reference, or the last played reference.
-
-```js
-const yourFn = (grid, lastPlay) => {
-  const counter = maybeCounter(grid, lastPlay).just()
-  return reduceWhile(
-    connect4,
-    partial(iterator, [grid, counter]),
-    lastPlay,
-    transFns
-  )
-}
-```
-
-The entry function is the `reduceWhile` function I have mentioned. I'm partially applying the grid and the lastPlayed counter so these values are available in the iterator.
-
-This is enough to make the test pass, the algorithm has found the references for the connected counters. The main goal of the final assignment has been to have you use some of the functions provided by Ramda, combine it with the pieces of functional programming theory we have looked at, and to write some code to solve a problem.
+The main goal of the final assignment has been to have you use some of the functions provided by Ramda, combine it with the pieces of functional programming theory we have looked at, and to write some code to solve a problem.
 
 I hope you have enjoyed the course. Please rate it, leave your comments and tell your friends and colleagues about it.
