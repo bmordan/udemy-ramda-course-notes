@@ -1,39 +1,47 @@
 ---
 layout: page
 title:  Simple Operators
-permalink: simple-operators/ 
+permalink: simple-operators/
 ---
 
 # Simple Operators
 
-In this session we are going to get ourselves set up with a course folder and start to look at the Ramda API.
+Thank you for choosing this course. My name is Bernard I’m a full stack web developer. Most of my years have been spent creating apps in JavaScript. When I was introduced to functional programming in JavaScript with the Ramda library I felt my programming world expanding and new vistas opening up.
 
-To follow along all you need installed on your computer is nodejs. There will be some information about doing this in the course notes.
+I am really looking forward to taking you through the sessions that comprise this course. Each session has a video for you to watch. Each session has a link to the transcript of the session. You might find yourself watching a session a couple of times. That’s totally fine. I have packed them.
 
-Open your terminal and navigate to a location where you'd like to create your course folder.
+I my mind I see you watching the video then creating the examples for yourself, maybe playing or experimenting a little bit too. Each session is building toward one of two ‘Assignments’.
 
-* Create the course folder and cd into it.
+The ‘Assignments’ pose you coding problems to solve. You can solve them however you like. If the test passes you’ve done it. You can think about the ‘Assignments’ as your playground.
 
-We are going to use a couple of node packages `ramda` (of cause) and `jest`. Lets add these packages to our course folder using `npm init`.
+In this first session we are going to just get ourself setup, and look at some simple operators.
 
-## Jest script
+You'll need 'nodejs' installed on your machine and there are course notes to help you do this. I'm going to make a folder and install two dependencies into it.
 
-Jest is a testing framework developed at 'the facebook' company. We are going to explore the Ramda API by writing tests and making assertions. Jest comes with a watch facility so we can have Jest watch our files and re-run the tests when we save our changes. Lets make this easy for ourselves by making that our test command `jest --watchAll`.
+Jest is a testing framework developed at 'Facebook'. You create test files with a .test extention. so my first file needs to end `.test.js`.
 
-* Create our first file
+```sh
+touch simple-operators.test.js
+```
 
-## Importing ramda
+Now I'm going to update the npm package.json test command to be `jest --watchAll` that will watch my test files and run the tests on save.
 
-I'm going to write my first failing test. To get the test to pass I need to import Ramda. There are a few ways to do this. We can assign the whole package to a variable `R` and reference the functions we want to use with `R.add()` for example. That will make the test pass.
+In the Ramda documentation they assign the library to a singleton named `R`. I don't really like that, I find it anoying to write `R.` everywhere. So you'll see me importing just the functions I want like this.
 
-I don't really find that very pleasing. I have the entire library of functions in my file, I just want to use two in this session.
+```js
+const {
+  add,
+  concat
+} = require('ramda')
+```
 
-What I want to do is use the `import` syntax. Now I can remove the `R`. But that doesn't work yet in node 8. I would need to transpile my javascript with Babel, and I don't like doing that either.
+So lets write a test.
 
-Since we have destructuring in node 8 lets just pull in the functions we need using require. Now I feel like I'm getting what I wanted.
+```js
+test('import ramda', () => {
+  expect(add(2, 3)).toBe(5)
+  expect(concat('Hello ', 'World')).toEqual('Hello World')
+})
+```
 
-## Ramda API
-
-As you can see there are lots of functions and utilities in the Ramda library. Lets use two of them really quickly. `add subtract multiply divide` you know what these functions do already. Lets start exploring Ramda with the low hanging fruit.
-
-That is all for this session. We have started to use our first Ramda functions.
+nice.
