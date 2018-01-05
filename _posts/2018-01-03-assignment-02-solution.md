@@ -2,7 +2,7 @@
 layout: page
 title:  Assignment 2 Solution
 permalink: assignment-02-solution/
-published: true
+published: false
 ---
 
 # {{page.title}}
